@@ -38,9 +38,12 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        working-directory: iac
 
       - name: Terraform Plan
         run: terraform plan -var="project_id=${{ secrets.GCP_PROJECT_ID }}" -var="region=${{ secrets.GCP_REGION }}"
+        working-directory: iac
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -var="project_id=${{ secrets.GCP_PROJECT_ID }}" -var="region=${{ secrets.GCP_REGION }}"
+        working-directory: iac
