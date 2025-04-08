@@ -12,7 +12,3 @@ variable "image_url" {
   description = "Docker image URL for Cloud Run service"
 }
 
-variable "telegram_bot_token" {
-  type = string
-  description = "Telegram bot token secret"
-}
