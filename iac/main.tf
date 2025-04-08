@@ -28,10 +28,11 @@ resource "google_project_iam_member" "sa_permissions" {
   ])
   role   = each.key
   member = "serviceAccount:${google_service_account.cloud_run_sa.email}"
+  project = var.project_id
 }
 
 resource "google_secret_manager_secret" "telegram_token" {
-  secret_id = var.telegram_token_secret_name
+  secret_id = var.telegram_bot_token
   replication {
     automatic = true
   }
@@ -47,7 +48,7 @@ resource "google_cloud_run_service" "telegram_service" {
       containers {
         image = var.image_url
         env {
-          name  = "telegram-bot-token"
+          name  = "telegram_bot_token"
           value = google_secret_manager_secret.telegram_token.id
         }
       }
