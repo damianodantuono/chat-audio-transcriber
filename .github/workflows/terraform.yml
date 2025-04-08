@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'iac/**'
-      
+
 jobs:
   terraform:
     name: 'Terraform Apply'
@@ -32,6 +32,9 @@ jobs:
 
       - name: Set up gcloud CLI
         uses: google-github-actions/setup-gcloud@v1
+
+      - name: Navigate to 'iac' directory
+        run: cd iac
 
       - name: Terraform Init
         run: terraform init
