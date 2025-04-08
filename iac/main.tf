@@ -33,6 +33,9 @@ resource "google_project_iam_member" "sa_permissions" {
 
 resource "google_secret_manager_secret" "telegram_token" {
   secret_id = var.telegram_bot_token
+  replication {
+    auto {}
+  }
 }
 
 resource "google_cloud_run_service" "telegram_service" {
