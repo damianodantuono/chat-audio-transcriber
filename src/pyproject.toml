@@ -1,0 +1,19 @@
+[project]
+name = "telegram-voice-bot"
+version = "0.1.0"
+description = "Telegram bot with speech-to-text and Gemini summarization"
+requires-python = ">=3.13"
+
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "httpx",
+    "google-cloud-speech",
+    "google-cloud-secret-manager",
+    "python-telegram-bot",
+    "google-generativeai"
+]
+
+[build-system]
+requires = ["uv"]
+build-backend = "uv.build"
