@@ -13,6 +13,15 @@ resource "google_project_service" "required_services" {
   service = each.key
 }
 
+resource "google_artifact_registry_repository" "telegram_bot_repo" {
+  provider = google
+
+  location      = var.region
+  repository_id = "telegram-voice-bot"
+  description   = "Docker repo for the telegram voice bot"
+  format        = "DOCKER"
+}
+
 resource "google_service_account" "cloud_run_sa" {
   account_id   = "cloud-run-bot-sa"
   display_name = "Cloud Run Telegram Bot SA"
