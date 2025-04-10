@@ -29,9 +29,9 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
 
       - name: Configure Docker to use Artifact Registry
-        run: gcloud auth configure-docker europe-docker.pkg.dev
+        run: gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
 
       - name: Build and push Docker image
         run: |
-          docker build -f src/Dockerfile -t europe-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest .
+          docker build -f src/Dockerfile -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest .
           docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest
