@@ -11,15 +11,16 @@ app = FastAPI()
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 PROJECT_ID = os.getenv("PROJECT_ID")
 LOCATION = os.getenv("LOCATION")
-PROMPT = """Il testo che ti verra' presentato viene da una nota vocale. Il testo comincia col tag <inizio testo> e finisce col tag <fine testo>. 
-Il tuo lavoro e' cercare di:
-- capire tutto cio' che e' importantte di questo testo
-- aggiustare la sintassi, punteggiatura ed errori grammaticali
-- presentare un riassunto schematico di cio' che e' stato detto
+PROMPT = """Sei un assistente AI esperto di interpretazione di messaggi vocali.
+Ti verra' presentato un testo estratto da una nota vocale. Sara' tra i tag <nota> e </nota>. Il tuo compito e' fornire un riassunto completo della nota.
+Linee guida:
+- includi tutto cio' che e' importante di questa nota
+- correggi la sintassi, punteggiatura ed errori grammaticali
+- presenta un riassunto schematico della nota
 
-<inizio testo>
+<nota>
 {text}
-<fine testo>
+</nota>
 """
 
 aiplatform.init(project=PROJECT_ID, location=LOCATION)
@@ -40,10 +41,10 @@ def transcribe_audio(audio_bytes):
     transcript = " ".join([r.alternatives[0].transcript for r in response.results])
     return transcript.strip()
 
-def summarize_text(text):
-    model = aiplatform.TextGenerationModel.from_pretrained("text-bison")
-    response = model.predict(prompt=PROMPT.format(text=text), temperature=0.3)
-    return response.text.strip()
+# def summarize_text(text):
+#     model = aiplatform.TextGenerationModel.from_pretrained("text-bison")
+#     response = model.predict(prompt=PROMPT.format(text=text), temperature=0)
+#     return response.text.strip()
 
 @app.post("/")
 async def webhook(request: Request):
@@ -66,12 +67,12 @@ async def webhook(request: Request):
     audio_bytes = audio_resp.content
 
     transcript = transcribe_audio(audio_bytes)
-    summary = summarize_text(transcript)
+    # summary = summarize_text(transcript)
 
     chat_id = data["message"]["chat"]["id"]
     requests.post(
         f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
-        data={"chat_id": chat_id, "text": summary}
+        data={"chat_id": chat_id, "text": transcript}
     )
 
     return PlainTextResponse("OK", status_code=200)
