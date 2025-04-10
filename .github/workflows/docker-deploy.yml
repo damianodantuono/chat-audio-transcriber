@@ -1,0 +1,34 @@
+name: Build Docker Image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+
+env:
+  SERVICE_NAME: telegram-voice-bot
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Configure Docker to use Artifact Registry
+        run: gcloud auth configure-docker europe-docker.pkg.dev
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t europe-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest .
+          docker push europe-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest
