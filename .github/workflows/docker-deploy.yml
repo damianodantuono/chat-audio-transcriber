@@ -30,9 +30,6 @@ jobs:
 
       - name: Configure Docker to use Artifact Registry
         run: gcloud auth configure-docker europe-docker.pkg.dev
-      
-      - name: Navigate to 'src' directory
-        run: cd src
 
       - name: Build and push Docker image
         run: |
