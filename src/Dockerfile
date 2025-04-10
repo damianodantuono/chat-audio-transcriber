@@ -2,14 +2,7 @@ FROM python:3.13-slim
 
 WORKDIR /app
 
-# Install uv
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
-
-# Download the latest installer
-ADD https://astral.sh/uv/install.sh /uv-installer.sh
-
-# Run the installer then remove it
-RUN sh /uv-installer.sh && rm /uv-installer.sh
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 COPY src/ ./
 
@@ -17,4 +10,4 @@ RUN uv sync --no-dev
 
 COPY . .
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["/app/.venv/bin/fastapi", "run", "app/main.py", "--port", "8080", "--host", "0.0.0.0"]
